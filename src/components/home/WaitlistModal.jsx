@@ -3,25 +3,54 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Waitlist } from "@/api/entities";
-import { ArrowRight, Mail, CheckCircle } from "lucide-react";
+import { SendEmail } from "@/api/integrations";
+import { ArrowRight, Mail, CheckCircle, Building2, CreditCard, User } from "lucide-react";
+
+const userTypes = [
+  { id: "merchant", label: "Merchant", icon: Building2, description: "I sell products/services" },
+  { id: "card_issuer", label: "Card Issuer", icon: CreditCard, description: "I issue payment cards" },
+  { id: "consumer", label: "Consumer", icon: User, description: "I want to track my purchases" },
+];
+
+const NOTIFY_EMAILS = ["vinamravr1@gmail.com", "sberhalter@gmail.com", "cjmullhaupt@gmail.com"];
 
 export default function WaitlistModal({ children }) {
   const [email, setEmail] = useState("");
+  const [userType, setUserType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim()) return;
+    if (!email.trim() || !userType) return;
 
     setIsSubmitting(true);
     try {
-      // Store the email in the Waitlist entity
+      // Store the signup in the Waitlist entity
       await Waitlist.create({
         email: email.trim(),
         source: "website",
-        status: "pending"
+        status: "pending",
+        user_type: userType
+      });
+
+      // Send notification email to the team
+      const userTypeLabel = userTypes.find(t => t.id === userType)?.label || userType;
+      await SendEmail({
+        to: NOTIFY_EMAILS,
+        subject: `New ItemIQ Waitlist Signup: ${userTypeLabel}`,
+        body: `
+New waitlist signup received!
+
+Email: ${email.trim()}
+User Type: ${userTypeLabel}
+Source: Website
+Time: ${new Date().toLocaleString()}
+
+---
+ItemIQ Waitlist System
+        `.trim()
       });
 
       setIsSubmitted(true);
@@ -29,7 +58,8 @@ export default function WaitlistModal({ children }) {
         setIsOpen(false);
         setIsSubmitted(false);
         setEmail("");
-      }, 2000);
+        setUserType("");
+      }, 2500);
     } catch (error) {
       console.error("Failed to save waitlist signup:", error);
     } finally {
@@ -41,6 +71,7 @@ export default function WaitlistModal({ children }) {
     setIsOpen(open);
     if (!open) {
       setEmail("");
+      setUserType("");
       setIsSubmitted(false);
       setIsSubmitting(false);
     }
@@ -58,7 +89,7 @@ export default function WaitlistModal({ children }) {
             Join the ItemIQ Waitlist
           </DialogTitle>
         </DialogHeader>
-        
+
         {isSubmitted ? (
           <div className="text-center py-6">
             <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-3" />
@@ -66,7 +97,35 @@ export default function WaitlistModal({ children }) {
             <p className="text-slate-600">We'll be in touch soon with updates on ItemIQ.</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-3">
+                I am a...
+              </label>
+              <div className="grid grid-cols-1 gap-2">
+                {userTypes.map((type) => (
+                  <button
+                    key={type.id}
+                    type="button"
+                    onClick={() => setUserType(type.id)}
+                    className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all text-left ${
+                      userType === type.id
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-slate-200 hover:border-slate-300"
+                    }`}
+                  >
+                    <type.icon className={`w-5 h-5 ${userType === type.id ? "text-blue-600" : "text-slate-400"}`} />
+                    <div>
+                      <div className={`font-medium ${userType === type.id ? "text-blue-900" : "text-slate-700"}`}>
+                        {type.label}
+                      </div>
+                      <div className="text-xs text-slate-500">{type.description}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Email Address
@@ -81,10 +140,11 @@ export default function WaitlistModal({ children }) {
                 disabled={isSubmitting}
               />
             </div>
-            <Button 
-              type="submit" 
+
+            <Button
+              type="submit"
               className="w-full bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700"
-              disabled={!email.trim() || isSubmitting}
+              disabled={!email.trim() || !userType || isSubmitting}
             >
               {isSubmitting ? (
                 <>

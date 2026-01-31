@@ -2,9 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, ExternalLink } from "lucide-react";
+import { Zap, ExternalLink, Play } from "lucide-react";
 import { motion } from "framer-motion";
-import WaitlistModal from "./WaitlistModal";
 
 export default function Hero() {
   const logoUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68cb10678907e93d0710a15a/ef91f01b9_logo1.png";
@@ -27,9 +26,9 @@ export default function Hero() {
           >
             <div className="relative w-[300px] h-auto mx-auto mb-6">
               {/* Base layer (all white) */}
-              <img 
+              <img
                 src={logoUrl}
-                alt="" 
+                alt=""
                 aria-hidden="true"
                 className="w-full h-auto"
                 style={{
@@ -37,9 +36,9 @@ export default function Hero() {
                 }}
               />
               {/* Top layer (original color, clipped to show 'IQ') */}
-              <img 
-                src={logoUrl} 
-                alt="ItemIQ Logo" 
+              <img
+                src={logoUrl}
+                alt="ItemIQ Logo"
                 className="absolute top-0 left-0 w-full h-auto"
                 style={{
                   clipPath: 'inset(0 0 0 60%)',
@@ -62,26 +61,26 @@ export default function Hero() {
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white shadow-lg">
                   <ExternalLink className="w-5 h-5 mr-2" />
-                  Launch App
+                  Test App (Beta)
                 </Button>
               </motion.div>
             </a>
-            <Link to={createPageUrl("StatementsDemo")}>
+            <Link to={createPageUrl("ProcessTransactions")}>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button size="lg" className="w-full sm:w-auto bg-white text-slate-900 hover:bg-slate-100 shadow-lg">
-                  <Zap className="w-5 h-5 mr-2" />
-                  See Demo
+                  <Play className="w-5 h-5 mr-2" />
+                  See It In Action
                 </Button>
               </motion.div>
             </Link>
-            <WaitlistModal>
+            <Link to={createPageUrl("StatementsDemo")}>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button size="lg" className="w-full sm:w-auto bg-slate-800 border-2 border-slate-600 text-white hover:bg-slate-700 hover:border-slate-500 transition-all">
-                  Join Waitlist
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <Zap className="w-5 h-5 mr-2" />
+                  Demo
                 </Button>
               </motion.div>
-            </WaitlistModal>
+            </Link>
           </div>
         </motion.div>
       </div>
