@@ -6,6 +6,11 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   base: './',
+  build: {
+    rollupOptions: {
+      input: './src-index.html',
+    },
+  },
   server: {
     allowedHosts: true
   },
