@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, Zap, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import WaitlistModal from "./WaitlistModal";
 
@@ -58,18 +58,19 @@ export default function Hero() {
             AI-powered financial services.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl("ProcessTransactions")}>
+            <a href="https://itemiq-frontend.vercel.app" target="_blank" rel="noopener noreferrer">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white shadow-lg">
-                  <Zap className="w-5 h-5 mr-2" />
-                  See It In Action
+                  <ExternalLink className="w-5 h-5 mr-2" />
+                  Launch App
                 </Button>
               </motion.div>
-            </Link>
+            </a>
             <Link to={createPageUrl("StatementsDemo")}>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button size="lg" className="w-full sm:w-auto bg-white text-slate-900 hover:bg-slate-100 shadow-lg">
-                  Demo
+                  <Zap className="w-5 h-5 mr-2" />
+                  See Demo
                 </Button>
               </motion.div>
             </Link>

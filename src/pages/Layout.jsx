@@ -1,14 +1,15 @@
 
 
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
   Home,
   Zap,
   Linkedin,
   BarChart3,
-  CreditCard
+  CreditCard,
+  ExternalLink
 } from "lucide-react";
 import {
   Sidebar,
@@ -27,6 +28,7 @@ import {
 
 const navigationItems = [
   { title: "Home", url: createPageUrl("Home"), icon: Home, description: "Product overview" },
+  { title: "Launch App", url: "https://itemiq-frontend.vercel.app", icon: ExternalLink, description: "Open the ItemIQ app", external: true },
   { title: "Statements (Demo)", url: createPageUrl("StatementsDemo"), icon: CreditCard, description: "Amex-style activity & insights" },
   { title: "Process Transactions", url: createPageUrl("ProcessTransactions"), icon: Zap, description: "Live AI normalization demo" },
   { title: "Survey Insights", url: createPageUrl("SurveyInsights"), icon: BarChart3, description: "Investor-ready consumer survey" },
@@ -34,19 +36,6 @@ const navigationItems = [
 
 export default function Layout({ children }) {
   const location = useLocation();
-  const navigate = useNavigate();
-
-  React.useEffect(() => {
-    // One-time per session: if app opens on a non-Home page by default, redirect to Home
-    const alreadyRedirected = sessionStorage.getItem("default_redirect_done");
-    if (!alreadyRedirected && location.pathname !== createPageUrl("Home")) {
-      const isAnyAppPage = navigationItems.some(item => item.url === location.pathname);
-      if (isAnyAppPage) {
-        sessionStorage.setItem("default_redirect_done", "1");
-        navigate(createPageUrl("Home"), { replace: true });
-      }
-    }
-  }, [location.pathname, navigate]);
 
   return (
     <SidebarProvider>
@@ -100,7 +89,11 @@ export default function Layout({ children }) {
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-2">
                   {navigationItems.map((item) => {
-                    const isActive = location.pathname === item.url;
+                    const isActive = !item.external && location.pathname === item.url;
+                    const LinkComponent = item.external ? 'a' : Link;
+                    const linkProps = item.external
+                      ? { href: item.url, target: "_blank", rel: "noopener noreferrer" }
+                      : { to: item.url };
                     return (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
@@ -109,7 +102,7 @@ export default function Layout({ children }) {
                             isActive ? "sb-active ring-1 ring-white/15" : "text-slate-200"
                           }`}
                         >
-                          <Link to={item.url} className="flex items-center gap-3 px-4 py-3">
+                          <LinkComponent {...linkProps} className="flex items-center gap-3 px-4 py-3">
                             <item.icon
                               className={`w-5 h-5 flex-shrink-0 ${
                                 isActive ? "text-white" : "text-slate-300"
@@ -125,7 +118,7 @@ export default function Layout({ children }) {
                                 {item.description}
                               </div>
                             </div>
-                          </Link>
+                          </LinkComponent>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
                     );
