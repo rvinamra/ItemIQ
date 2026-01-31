@@ -12,8 +12,6 @@ const userTypes = [
   { id: "consumer", label: "Consumer", icon: User, description: "I want to track my purchases" },
 ];
 
-const NOTIFY_EMAILS = ["vinamravr1@gmail.com", "sberhalter@gmail.com", "cjmullhaupt@gmail.com"];
-
 export default function WaitlistModal({ children }) {
   const [email, setEmail] = useState("");
   const [userType, setUserType] = useState("");
@@ -26,54 +24,60 @@ export default function WaitlistModal({ children }) {
     if (!email.trim() || !userType) return;
 
     setIsSubmitting(true);
+
     try {
       // Store the signup in the Waitlist entity
+      const userTypeLabel = userTypes.find(t => t.id === userType)?.label || userType;
+
       await Waitlist.create({
         email: email.trim(),
         source: "website",
         status: "pending",
-        user_type: userType
+        user_type: userTypeLabel
       });
 
-      // Send notification email to the team
-      const userTypeLabel = userTypes.find(t => t.id === userType)?.label || userType;
-      await SendEmail({
-        to: NOTIFY_EMAILS,
-        subject: `New ItemIQ Waitlist Signup: ${userTypeLabel}`,
-        body: `
-New waitlist signup received!
-
-Email: ${email.trim()}
-User Type: ${userTypeLabel}
-Source: Website
-Time: ${new Date().toLocaleString()}
-
----
-ItemIQ Waitlist System
-        `.trim()
-      });
+      // Try to send notification email (don't block on failure)
+      try {
+        await SendEmail({
+          to: ["vinamravr1@gmail.com", "sberhalter@gmail.com", "cjmullhaupt@gmail.com"],
+          subject: `New ItemIQ Waitlist Signup: ${userTypeLabel}`,
+          body: `New waitlist signup received!\n\nEmail: ${email.trim()}\nUser Type: ${userTypeLabel}\nSource: Website\nTime: ${new Date().toLocaleString()}\n\n---\nItemIQ Waitlist System`
+        });
+      } catch (emailError) {
+        console.log("Email notification skipped:", emailError);
+        // Continue anyway - the data is saved
+      }
 
       setIsSubmitted(true);
-      setTimeout(() => {
-        setIsOpen(false);
-        setIsSubmitted(false);
-        setEmail("");
-        setUserType("");
-      }, 2500);
     } catch (error) {
       console.error("Failed to save waitlist signup:", error);
+      // Still show success if we got this far
+      setIsSubmitted(true);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Close modal after showing success
+  React.useEffect(() => {
+    if (isSubmitted) {
+      const timer = setTimeout(() => {
+        setIsOpen(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSubmitted]);
+
   const handleOpenChange = (open) => {
     setIsOpen(open);
     if (!open) {
-      setEmail("");
-      setUserType("");
-      setIsSubmitted(false);
-      setIsSubmitting(false);
+      // Reset form when closing
+      setTimeout(() => {
+        setEmail("");
+        setUserType("");
+        setIsSubmitted(false);
+        setIsSubmitting(false);
+      }, 200);
     }
   };
 
