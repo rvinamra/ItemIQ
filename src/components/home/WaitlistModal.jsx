@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import emailjs from "@emailjs/browser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Waitlist } from "@/api/entities";
-import { SendEmail } from "@/api/integrations";
 import { ArrowRight, Mail, CheckCircle, Building2, CreditCard, User } from "lucide-react";
+import { EMAILJS_CONFIG, NOTIFY_EMAILS } from "@/config/emailjs";
 
 const userTypes = [
   { id: "merchant", label: "Merchant", icon: Building2, description: "I sell products/services" },
@@ -24,34 +25,44 @@ export default function WaitlistModal({ children }) {
     if (!email.trim() || !userType) return;
 
     setIsSubmitting(true);
+    const userTypeLabel = userTypes.find(t => t.id === userType)?.label || userType;
 
     try {
-      // Store the signup in the Waitlist entity
-      const userTypeLabel = userTypes.find(t => t.id === userType)?.label || userType;
-
-      await Waitlist.create({
-        email: email.trim(),
-        source: "website",
-        status: "pending",
-        user_type: userTypeLabel
-      });
-
-      // Try to send notification email (don't block on failure)
+      // Store in Base44 Waitlist entity
       try {
-        await SendEmail({
-          to: ["vinamravr1@gmail.com", "sberhalter@gmail.com", "cjmullhaupt@gmail.com"],
-          subject: `New ItemIQ Waitlist Signup: ${userTypeLabel}`,
-          body: `New waitlist signup received!\n\nEmail: ${email.trim()}\nUser Type: ${userTypeLabel}\nSource: Website\nTime: ${new Date().toLocaleString()}\n\n---\nItemIQ Waitlist System`
+        await Waitlist.create({
+          email: email.trim(),
+          source: "website",
+          status: "pending",
+          user_type: userTypeLabel
         });
+      } catch (err) {
+        console.log("Waitlist entity save skipped:", err);
+      }
+
+      // Send email notification via EmailJS
+      try {
+        await emailjs.send(
+          EMAILJS_CONFIG.SERVICE_ID,
+          EMAILJS_CONFIG.TEMPLATE_WAITLIST,
+          {
+            to_email: NOTIFY_EMAILS.join(","),
+            from_email: email.trim(),
+            user_type: userTypeLabel,
+            signup_time: new Date().toLocaleString(),
+            message: `New waitlist signup!\n\nEmail: ${email.trim()}\nUser Type: ${userTypeLabel}`
+          },
+          EMAILJS_CONFIG.PUBLIC_KEY
+        );
+        console.log("Email sent successfully");
       } catch (emailError) {
-        console.log("Email notification skipped:", emailError);
-        // Continue anyway - the data is saved
+        console.log("EmailJS error:", emailError);
+        // Continue anyway - data is saved in entity
       }
 
       setIsSubmitted(true);
     } catch (error) {
-      console.error("Failed to save waitlist signup:", error);
-      // Still show success if we got this far
+      console.error("Submission error:", error);
       setIsSubmitted(true);
     } finally {
       setIsSubmitting(false);
@@ -71,7 +82,6 @@ export default function WaitlistModal({ children }) {
   const handleOpenChange = (open) => {
     setIsOpen(open);
     if (!open) {
-      // Reset form when closing
       setTimeout(() => {
         setEmail("");
         setUserType("");

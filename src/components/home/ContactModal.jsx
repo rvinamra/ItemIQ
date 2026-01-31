@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import emailjs from "@emailjs/browser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { SendEmail } from "@/api/integrations";
 import { Send, MessageSquare, CheckCircle } from "lucide-react";
+import { EMAILJS_CONFIG, NOTIFY_EMAILS } from "@/config/emailjs";
 
 export default function ContactModal({ children }) {
   const [name, setName] = useState("");
@@ -21,22 +22,24 @@ export default function ContactModal({ children }) {
     setIsSubmitting(true);
 
     try {
-      // Try to send contact email
-      try {
-        await SendEmail({
-          to: ["vinamravr1@gmail.com", "sberhalter@gmail.com", "cjmullhaupt@gmail.com"],
-          subject: `ItemIQ Contact Form: ${name.trim()}`,
-          body: `New contact form submission!\n\nName: ${name.trim()}\nEmail: ${email.trim()}\nTime: ${new Date().toLocaleString()}\n\nMessage:\n${message.trim()}\n\n---\nItemIQ Contact Form`
-        });
-      } catch (emailError) {
-        console.log("Email send skipped:", emailError);
-        // Continue anyway
-      }
-
+      // Send email via EmailJS
+      await emailjs.send(
+        EMAILJS_CONFIG.SERVICE_ID,
+        EMAILJS_CONFIG.TEMPLATE_CONTACT,
+        {
+          to_email: NOTIFY_EMAILS.join(","),
+          from_name: name.trim(),
+          from_email: email.trim(),
+          message: message.trim(),
+          submit_time: new Date().toLocaleString()
+        },
+        EMAILJS_CONFIG.PUBLIC_KEY
+      );
+      console.log("Contact email sent successfully");
       setIsSubmitted(true);
     } catch (error) {
-      console.error("Failed to submit contact form:", error);
-      // Still show success
+      console.error("EmailJS error:", error);
+      // Still show success to user (they can try again if needed)
       setIsSubmitted(true);
     } finally {
       setIsSubmitting(false);
@@ -56,7 +59,6 @@ export default function ContactModal({ children }) {
   const handleOpenChange = (open) => {
     setIsOpen(open);
     if (!open) {
-      // Reset form when closing
       setTimeout(() => {
         setName("");
         setEmail("");
