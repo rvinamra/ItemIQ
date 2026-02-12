@@ -9,6 +9,7 @@ import SurveyInsights from "./SurveyInsights";
 import StatementsDemo from "./StatementsDemo";
 
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import usePageTracking from '../hooks/usePageTracking';
 
 const PAGES = {
     
@@ -38,6 +39,7 @@ function _getCurrentPage(url) {
 // Create a wrapper component that uses useLocation inside the Router context
 function PagesContent() {
     const location = useLocation();
+    usePageTracking();
     const currentPage = _getCurrentPage(location.pathname);
     
     return (
