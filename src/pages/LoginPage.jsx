@@ -29,11 +29,13 @@ export default function LoginPage() {
       <Card className="w-full max-w-md border-slate-700/50 bg-slate-900/80 backdrop-blur-sm shadow-2xl">
         <CardContent className="pt-8 pb-8 px-8">
           <div className="flex justify-center mb-8">
-            <img
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68cb10678907e93d0710a15a/ef91f01b9_logo1.png"
-              alt="ItemIQ Logo"
-              className="h-10 w-auto"
-            />
+            <div className="bg-white rounded-xl px-5 py-3">
+              <img
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68cb10678907e93d0710a15a/ef91f01b9_logo1.png"
+                alt="ItemIQ Logo"
+                className="h-10 w-auto"
+              />
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
