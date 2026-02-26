@@ -7,7 +7,6 @@ import { createPageUrl } from "@/utils";
 import {
   Home,
   Zap,
-  Linkedin,
   BarChart3,
   CreditCard
 } from "lucide-react";
@@ -118,21 +117,8 @@ export default function Layout({ children }) {
 
           {/* Footer */}
           <SidebarFooter className="px-4 py-3 border-t border-slate-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <a
-                  href="https://www.linkedin.com/company/itemiq"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="p-2 rounded-md text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition"
-                  aria-label="ItemIQ on LinkedIn"
-                >
-                  <Linkedin className="w-5 h-5" />
-                </a>
-              </div>
-              <div className="text-right text-slate-500 text-xs">
-                &copy; ItemIQ 2025
-              </div>
+            <div className="text-center text-slate-500 text-xs">
+              &copy; ItemIQ 2026
             </div>
           </SidebarFooter>
         </Sidebar>
