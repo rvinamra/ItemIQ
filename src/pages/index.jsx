@@ -8,19 +8,22 @@ import SurveyInsights from "./SurveyInsights";
 
 import StatementsDemo from "./StatementsDemo";
 
+import LoginPage from "./LoginPage";
+
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import usePageTracking from '../hooks/usePageTracking';
+import { AuthProvider, useAuth } from '../contexts/AuthContext';
 
 const PAGES = {
-    
+
     ProcessTransactions: ProcessTransactions,
-    
+
     Home: Home,
-    
+
     SurveyInsights: SurveyInsights,
-    
+
     StatementsDemo: StatementsDemo,
-    
+
 }
 
 function _getCurrentPage(url) {
@@ -40,20 +43,25 @@ function _getCurrentPage(url) {
 function PagesContent() {
     const location = useLocation();
     usePageTracking();
+    const { isAuthenticated } = useAuth();
     const currentPage = _getCurrentPage(location.pathname);
-    
+
+    if (!isAuthenticated) {
+        return <LoginPage />;
+    }
+
     return (
         <Layout currentPageName={currentPage}>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/ProcessTransactions" element={<ProcessTransactions />} />
-                
+
                 <Route path="/Home" element={<Home />} />
-                
+
                 <Route path="/SurveyInsights" element={<SurveyInsights />} />
-                
+
                 <Route path="/StatementsDemo" element={<StatementsDemo />} />
-                
+
             </Routes>
         </Layout>
     );
@@ -61,8 +69,10 @@ function PagesContent() {
 
 export default function Pages() {
     return (
-        <Router>
-            <PagesContent />
-        </Router>
+        <AuthProvider>
+            <Router>
+                <PagesContent />
+            </Router>
+        </AuthProvider>
     );
 }
