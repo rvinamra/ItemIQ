@@ -112,8 +112,7 @@ This allows direct links to routes like `https://itemiq.io/demo` to work correct
 
 The site is gated behind a login screen. Visitors must enter credentials before accessing any content.
 
-- **Member ID:** `itemiq_test`
-- **Password:** `svcholdings_ITEMIQ`
+- Credentials are defined in `src/contexts/AuthContext.jsx` (shared privately, not checked into docs)
 - Session is stored in `sessionStorage` (clears when the browser tab is closed)
 - To change credentials, update the constants in `src/contexts/AuthContext.jsx` and bump `AUTH_VERSION`
 

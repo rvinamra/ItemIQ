@@ -210,7 +210,7 @@ itemiq-website/
 
 ### Authentication Gate
 - Client-side login gate — all site content hidden until authenticated
-- Credentials: Member ID `itemiq_test` / Password `svcholdings_ITEMIQ` (hardcoded in `src/contexts/AuthContext.jsx`)
+- Credentials are hardcoded in `src/contexts/AuthContext.jsx` (not documented in plaintext for security)
 - Uses `sessionStorage` — session clears when browser tab closes
 - Auth version check (`itemiq_auth_v`) forces re-login when credentials change (bump `AUTH_VERSION` constant)
 - Login page styled to match itemiq-frontend app (light theme, text-based logo)
