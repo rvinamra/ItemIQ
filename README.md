@@ -1,7 +1,5 @@
 # ItemIQ Website
 
-Marketing website for ItemIQ - a transaction intelligence app that transforms bank transactions into itemized receipts.
-
 ## Live URL
 
 **https://www.itemiq.io**
@@ -42,62 +40,13 @@ rm -rf assets && cp -r dist/assets .
 git add -A && git commit -m "Deploy updates" && git push
 ```
 
-## Project Structure
+## Authentication
 
-```
-itemiq-website/
-├── src/
-│   ├── main.jsx              # Entry point
-│   ├── App.jsx               # Main app component
-│   ├── contexts/
-│   │   └── AuthContext.jsx    # Auth state provider (sessionStorage)
-│   ├── pages/
-│   │   ├── Layout.jsx        # Navigation layout
-│   │   ├── LoginPage.jsx     # Login screen (auth gate)
-│   │   ├── index.jsx         # Route definitions + auth gate
-│   │   └── Home.jsx          # Homepage
-│   ├── components/
-│   │   └── home/
-│   │       ├── Hero.jsx          # Hero section with CTA buttons
-│   │       ├── CallToAction.jsx  # Bottom CTA with waitlist/contact
-│   │       ├── WaitlistModal.jsx # Waitlist signup form
-│   │       └── ContactModal.jsx  # Contact form
-│   ├── config/
-│   │   └── emailjs.js        # EmailJS configuration
-│   └── api/
-│       └── entities/         # Base44 entity wrappers
-├── src-index.html            # Vite build entry point
-├── index.html                # Production index with SPA routing
-├── 404.html                  # GitHub Pages SPA redirect
-├── vite.config.js
-├── tailwind.config.js
-└── package.json
-```
+The site is gated behind a login screen. Visitors must enter credentials before accessing any content.
 
-## EmailJS Configuration
-
-Email notifications are sent via EmailJS when users submit the waitlist or contact forms.
-
-### Setup
-
-1. Create an account at [EmailJS](https://www.emailjs.com/)
-2. Create an email service (e.g., Gmail)
-3. Create templates for waitlist and contact forms
-4. Update `src/config/emailjs.js` with your credentials:
-
-```javascript
-export const EMAILJS_CONFIG = {
-  SERVICE_ID: "service_itemiq",
-  TEMPLATE_WAITLIST: "template_waitlist",
-  TEMPLATE_CONTACT: "template_contact",
-  PUBLIC_KEY: "your-public-key"
-};
-
-export const NOTIFY_EMAILS = [
-  "email1@example.com",
-  "email2@example.com"
-];
-```
+- Credentials are defined in `src/contexts/AuthContext.jsx` (shared privately, not checked into docs)
+- Session is stored in `sessionStorage` (clears when the browser tab is closed)
+- To change credentials, update the hash constants in `src/contexts/AuthContext.jsx` and bump `AUTH_VERSION`
 
 ## GitHub Pages SPA Routing
 
@@ -106,32 +55,6 @@ Since GitHub Pages doesn't support SPA routing natively, we use a workaround:
 1. **404.html** - Catches all 404s and redirects to index.html with the path as a query parameter
 2. **index.html** - Contains a script that reads the query parameter and uses `history.replaceState` to restore the original URL
 
-This allows direct links to routes like `https://itemiq.io/demo` to work correctly.
-
-## Authentication
-
-The site is gated behind a login screen. Visitors must enter credentials before accessing any content.
-
-- Credentials are defined in `src/contexts/AuthContext.jsx` (shared privately, not checked into docs)
-- Session is stored in `sessionStorage` (clears when the browser tab is closed)
-- To change credentials, update the constants in `src/contexts/AuthContext.jsx` and bump `AUTH_VERSION`
-
-## Key Features
-
-### Hero Section
-- "Test App (Beta)" - Links to the main ItemIQ app
-- "See It In Action" - Scrolls to demo section
-- "Demo" - Links to demo page
-
-### Waitlist Form
-- User type selection (Merchant, Card Issuer, Consumer)
-- Email collection
-- EmailJS integration for notifications
-
-### Contact Form
-- Name, email, message fields
-- EmailJS integration for team notifications
-
 ## Related Repositories
 
 - **Backend:** [itemiq-backend](https://github.com/rvinamra/itemiq-backend)
@@ -139,18 +62,9 @@ The site is gated behind a login screen. Visitors must enter credentials before 
 
 ## Build Notes
 
-### Important: Vite Entry Point
+### Vite Entry Point
 
-The project uses `src-index.html` as the Vite build entry point (configured in `vite.config.js`). This file references `/src/main.jsx` directly, which allows Vite to bundle the full React application.
-
-```javascript
-// vite.config.js
-build: {
-  rollupOptions: {
-    input: 'src-index.html'
-  }
-}
-```
+The project uses `src-index.html` as the Vite build entry point (configured in `vite.config.js`). The `index.html` at root is the SPA redirect handler for GitHub Pages, NOT the Vite entry.
 
 ### Asset Paths
 
