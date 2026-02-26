@@ -30,7 +30,7 @@ export default function LoginPage() {
           <span style={{ color: "#3b82f6" }}>item</span>
           <span style={{ color: "#111827" }}>IQ</span>
         </h1>
-        <p className="mt-2 text-gray-500 text-sm">Investor Portal</p>
+        <p className="mt-2 text-gray-500 text-sm">See what you actually bought</p>
       </div>
 
       {/* Sign-in card */}
