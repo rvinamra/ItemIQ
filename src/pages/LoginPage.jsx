@@ -14,7 +14,16 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     const success = await login(memberId, password);
-    if (!success) {
+    if (success) {
+      // Submit to hidden iframe to trigger browser's "Save password?" prompt
+      const iframe = document.getElementById("login-sink");
+      if (iframe) {
+        const form = document.getElementById("login-form");
+        form.target = "login-sink";
+        form.action = "about:blank";
+        form.submit();
+      }
+    } else {
       setError("Invalid Member ID or Password.");
     }
   };
@@ -37,7 +46,8 @@ export default function LoginPage() {
         <h2 className="text-lg font-semibold text-gray-900 mb-1">Sign in</h2>
         <p className="text-sm text-gray-500 mb-6">Enter your credentials to continue</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <iframe name="login-sink" id="login-sink" className="hidden" style={{ display: "none" }} />
+        <form id="login-form" onSubmit={handleSubmit} method="post" className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="memberId" className="text-sm font-medium text-gray-700">
               Member ID

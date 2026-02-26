@@ -40,14 +40,6 @@ rm -rf assets && cp -r dist/assets .
 git add -A && git commit -m "Deploy updates" && git push
 ```
 
-## Authentication
-
-The site is gated behind a login screen. Visitors must enter credentials before accessing any content.
-
-- Credentials are defined in `src/contexts/AuthContext.jsx` (shared privately, not checked into docs)
-- Session is stored in `sessionStorage` (clears when the browser tab is closed)
-- To change credentials, update the hash constants in `src/contexts/AuthContext.jsx` and bump `AUTH_VERSION`
-
 ## GitHub Pages SPA Routing
 
 Since GitHub Pages doesn't support SPA routing natively, we use a workaround:
