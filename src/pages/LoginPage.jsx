@@ -10,10 +10,10 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    const success = login(memberId, password);
+    const success = await login(memberId, password);
     if (!success) {
       setError("Invalid Member ID or Password.");
     }
