@@ -57,7 +57,9 @@ export default function Layout({ children }) {
             border: 1px solid #334155;
           }
           .sb-trigger:hover { background: #1e293b; }
-          .sb-item:hover { background: var(--item-hover); }
+          .sb-item:hover { background: rgba(255,255,255,0.08); }
+          .sb-item:hover .sb-title { color: #f1f5f9; }
+          .sb-item:hover .sb-icon { color: #94a3b8; }
           .sb-active { background: var(--pill-active); color: #fff; }
         `}
       </style>
@@ -92,21 +94,23 @@ export default function Layout({ children }) {
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
                           asChild
-                          className={`w-full rounded-full border border-transparent transition-colors sb-item min-h-[52px] ${
-                            isActive ? "sb-active ring-1 ring-white/15" : "text-slate-200"
+                          className={`w-full rounded-full border border-transparent transition-all duration-150 sb-item min-h-[52px] ${
+                            isActive ? "sb-active ring-1 ring-white/15" : ""
                           }`}
                         >
                           <Link to={item.url} className="flex items-center gap-3 px-4 py-3">
                             <item.icon
-                              className={`w-5 h-5 flex-shrink-0 ${
-                                isActive ? "text-white" : "text-slate-300"
+                              className={`w-5 h-5 flex-shrink-0 sb-icon ${
+                                isActive ? "text-white" : "text-slate-400"
                               }`}
                             />
                             <div className="min-w-0 leading-tight">
-                              <div className="text-sm font-semibold truncate">{item.title}</div>
+                              <div className={`text-sm font-semibold truncate sb-title ${
+                                isActive ? "text-white" : "text-slate-300"
+                              }`}>{item.title}</div>
                               <div
                                 className={`text-[12px] truncate ${
-                                  isActive ? "text-slate-200/90" : "text-slate-400"
+                                  isActive ? "text-slate-200/90" : "text-slate-500"
                                 }`}
                               >
                                 {item.description}
