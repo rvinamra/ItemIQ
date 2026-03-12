@@ -4,9 +4,10 @@ import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Zap, ExternalLink, Play } from "lucide-react";
 import { motion } from "framer-motion";
+import logoImg from "@/assets/logo.png";
 
 export default function Hero() {
-  const logoUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68cb10678907e93d0710a15a/ef91f01b9_logo1.png";
+  const logoUrl = logoImg;
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-800 text-white">

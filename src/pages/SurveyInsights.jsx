@@ -43,7 +43,7 @@ export default function SurveyInsights() {
               <BarChart3 className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl md:// UPDATED: N = 1,0004xl font-bold text-slate-900">Consumer Survey Insights</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-slate-900">Consumer Survey Insights</h1>
               <p className="text-slate-600">Investor-ready highlights from 1,000 affluent US consumers (Sep 2025).</p>
             </div>
           </div>

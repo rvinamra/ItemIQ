@@ -4,6 +4,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import logoImg from "@/assets/logo.png";
 import {
   Home,
   Zap,
@@ -61,7 +62,7 @@ export default function Layout({ children }) {
             <div className="flex items-center justify-center">
               <Link to={createPageUrl("Home")} className="flex items-center">
                 <img
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68cb10678907e93d0710a15a/ef91f01b9_logo1.png"
+                  src={logoImg}
                   alt="ItemIQ Logo"
                   className="h-7 w-auto"
                 />
@@ -78,7 +79,7 @@ export default function Layout({ children }) {
               <SidebarGroupContent>
                 <SidebarMenu className="space-y-2">
                   {navigationItems.map((item) => {
-                    const isActive = location.pathname === item.url;
+                    const isActive = location.pathname.toLowerCase() === item.url.toLowerCase();
                     return (
                       <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
@@ -136,7 +137,7 @@ export default function Layout({ children }) {
               <SidebarTrigger className="p-2 rounded-lg bg-slate-100 text-slate-700" />
               <Link to={createPageUrl("Home")}>
                 <img
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68cb10678907e93d0710a15a/ef91f01b9_logo1.png"
+                  src={logoImg}
                   alt="ItemIQ Logo"
                   className="h-8 w-auto"
                 />
